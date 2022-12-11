@@ -1,0 +1,24 @@
+{
+  "name": "tinkoff-ajax",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "run": "vite",
+    "start": "npx tailwindcss -i ./input.css -o ./output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikitanosov1/tinkoff-ajax.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nikitanosov1/tinkoff-ajax/issues"
+  },
+  "homepage": "https://github.com/nikitanosov1/tinkoff-ajax#readme",
+  "dependencies": {
+    "normalize.css": "^8.0.1",
+    "vite": "^4.0.0"
+  }
+}

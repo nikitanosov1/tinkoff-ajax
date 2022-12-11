@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AJAX</title>
+        <link href="/output.css" rel="stylesheet">
+    </head>
+    <body class="relative w-full bg-dust min-h-screen dark:bg-coffee">
+        <!-- Nav section -->
+        <nav class="flex flex-row items-center justify-center relative mx-auto bg-coffee shadow">
+            <div class="container flex items-center justify-between">
+                <div class="px-10">
+                    <img height="80" width="80" src="./assets/newLogo.png" alt="logo">
+                </div>
+                <div class="hidden space-x-20 md:flex">
+                    <a class="font-light text-dust font-sans hover:text-dust" href="#">GitHub</a>
+                    <a class="font-light text-dust font-sans hover:text-dust" href="#">Vk</a>
+                    <a class="font-light text-dust font-sans hover:text-dust" href="#">Telegram</a>
+                </div>
+            </div>        
+        </nav>
+
+        <!-- Main section -->
+        <section class="mx-auto flex flex-col items-center bg-latte py-2">
+            <h1 class="text-6xl text-center w-1/2 my-6 text-black">Create posts, add them to favorites, share with friends</h2>
+            <a class="rounded-2xl bg-coffee text-dust font-light px-2 py-1 mt-7 justify-self-center" href="#">Create post</a>
+        </section>
+
+        <!-- Posts section -->
+        <section id="posts" class="mx-auto container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">  
+            <div class="post bg-coffee rounded-2xl p-4 m-2 dark:bg-dust">
+                <div>
+                    <img class="inline" height="80" width="80" src="./assets/anonim.png">
+                    <h2 class="inline text-dust dark:text-coffee">Zarov Evgenii</h2>
+                </div>
+                <h1 class="text-center text-2xl pb-5 text-dust dark:text-coffee">О пользе алкоголя</h1>
+                <h2 class="text-dust dark:text-coffee">墙太硬了，怎么用力也不能把图钉按进墙里去。力也不能把图钉按图钉按进墙里去。力也不能硬了，怎么用力也不能把图</h2>
+            </div>
+            
+        </section>
+        
+        <!-- Dark mode button -->
+        <button class="fixed top-2 right-2 w-5 h-5 bg-dust dark-switch-button" type="button"></button>
+
+        <script src="./main.js"></script>
+    </body>
+</html>
