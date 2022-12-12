@@ -8,6 +8,14 @@
         <link href="/output.css" rel="stylesheet">
     </head>
     <body class="relative w-full bg-dust min-h-screen dark:bg-coffee">
+        <!-- Modal window -->
+        <div id="modal" class="w-full h-full">
+            <div id="modal__overlay" class="fixed w-full h-full bg-black opacity-40"></div>
+            <div id="modal__window" class="fixed left-1/3 top-1/4 w-1/3 h-1/2 bg-coffee rounded-3xl">
+                
+            </div>
+        </div>
+
         <!-- Nav section -->
         <nav class="flex flex-row items-center justify-center relative mx-auto bg-coffee shadow">
             <div class="container flex items-center justify-between">
@@ -30,20 +38,33 @@
 
         <!-- Posts section -->
         <section id="posts" class="mx-auto container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">  
+            
+            <!-- Test post -->
             <div class="post bg-coffee rounded-2xl p-4 m-2 dark:bg-dust">
-                <div>
-                    <img class="inline" height="80" width="80" src="./assets/anonim.png">
-                    <h2 class="inline text-dust dark:text-coffee">Zarov Evgenii</h2>
+                <div class="flex flex-row justify-between align-middle">
+                    <div>
+                        <img class="inline" height="80" width="80" src="./assets/anonim.png">
+                        <h2 class="inline text-dust dark:text-coffee">Zarov Evgenii</h2>
+                    </div>
+                    <div class="flex align-middle flex-row justify-end my-4 space-x-3 mr-2">
+                        <img class="edit-button w-8 h-8 self-center" src="./assets/edit.png" alt="edit">
+                        <img class="delete-button w-8 h-8 self-center" src="./assets/bin.png" alt="delete">
+                    </div>
                 </div>
                 <h1 class="text-center text-2xl pb-5 text-dust dark:text-coffee">О пользе алкоголя</h1>
                 <h2 class="text-dust dark:text-coffee">墙太硬了，怎么用力也不能把图钉按进墙里去。力也不能把图钉按图钉按进墙里去。力也不能硬了，怎么用力也不能把图</h2>
             </div>
-            
+
+            <!-- Posts from ajax -->
+
         </section>
         
         <!-- Dark mode button -->
         <button class="fixed top-2 right-2 w-5 h-5 bg-dust dark-switch-button" type="button"></button>
 
-        <script src="./main.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script type="module" src="./userService.js"></script>
+        <script type="module" src="./postService.js"></script>
+        <script type="module" src="./main.js"></script>
     </body>
 </html>
