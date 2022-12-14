@@ -72,6 +72,15 @@ const initModal = () => {
                 posts[idLastSelectedPost].username = users[userIdInput.value].name;
                 posts[idLastSelectedPost].title = titleInput.value;
                 posts[idLastSelectedPost].body = bodyInput.value;
+
+                // fake ajax request
+                postService.editPost({
+                    id: idLastSelectedPost,
+                    title: titleInput.value,
+                    body: bodyInput.value,
+                    userId: userIdInput.value
+                });
+
                 break;
             case modes.CREATE:
                 // added post to posts array
