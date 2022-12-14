@@ -101,7 +101,6 @@ const initModal = () => {
 };
 
 const editPost = (id) => {
-    console.log(`edit post with id = ${id}`);
     modalMode = modes.EDIT;
     idLastSelectedPost = id;
     // fill modal
@@ -113,7 +112,6 @@ const editPost = (id) => {
 };
 
 const deletePost = (id) => {
-    console.log(`delete post with id = ${id}`);
     delete posts[id];
     postService.deletePost(id);
     divPosts.removeChild(document.querySelector(`#post-${id}`));
