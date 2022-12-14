@@ -10,6 +10,20 @@ let idLastSelectedPost = null;
 let modalWindow = document.querySelector('#modal');
 let divPosts = document.querySelector('#posts');
 
+// loader
+
+let loader = document.querySelector('#loader');
+let loading = new CustomEvent('loading');
+let stopLoading = new CustomEvent('stopLoading');
+
+document.addEventListener('loading', () => {
+    loader.hidden = false;
+});
+
+document.addEventListener('stopLoading', () => {
+    loader.hidden = true;
+});
+
 const initFetchUsers = async () => {
     await userService.getUsers().then((fetchUsers) => {
         fetchUsers.forEach((fetchUser) => {
@@ -140,6 +154,9 @@ const addPostToPosts = async (postData) => {
 };
 
 const initFetchPostsAndRenderAll = async () => {
+    // start loading
+    document.dispatchEvent(loading);
+
     let divPosts = document.querySelector("#posts");
     await postService.getPosts()
     .then((fetchPosts) => {
@@ -152,6 +169,9 @@ const initFetchPostsAndRenderAll = async () => {
             });
         });
     });
+
+    // stop loading
+    document.dispatchEvent(stopLoading);
 }
 
 // main
