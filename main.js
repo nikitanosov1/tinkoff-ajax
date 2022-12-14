@@ -134,11 +134,28 @@ const initCreatePostButton = () => {
     });
 };
 
+const insertAfter = (referenceNode, newNode) => {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
 const changeImportanceOfPost = (id) => {
     let starDiv = document.querySelector(`#post-${id} .star`);
     starDiv.firstElementChild.hidden = !starDiv.firstElementChild.hidden;
     starDiv.lastElementChild.hidden = !starDiv.lastElementChild.hidden;
-    localStorage[id] = !(localStorage[id] ?? false); // save to localStorage
+    localStorage[id] = String(!(localStorage[id] ?? false)); // save to localStorage
+    let currentPost = document.querySelector(`#post-${id}`);
+    console.log(localStorage);
+    console.log(typeof localStorage[id]);
+    if (localStorage[id] === 'true') {
+        // this post now is important, move to start
+        //divPosts.firstChild is loader
+        console.log("в начало его!")
+        insertAfter(divPosts.firstChild, currentPost);
+    } else {
+        // this post now is normal, move to end
+        console.log("в конец его!")
+        insertAfter(divPosts.lastChild, currentPost);
+    }
 
 }
 
