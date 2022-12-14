@@ -2,52 +2,54 @@ import userService from "./userService.js";
 import postService from "./postService.js";
 
 // states
-let modalIsShow = false;
 let posts = {};
 let users = {};
 let modes = { CREATE: 0, EDIT: 1 };
 let modalMode = modes.CREATE;
 let idLastSelectedPost = null;
 let modalWindow = document.querySelector('#modal');
+let divPosts = document.querySelector('#posts');
 
 const initFetchPostsAndRenderAll = async () => {
     let divPosts = document.querySelector("#posts");
     await postService.getPosts()
     .then((fetchPosts) => {
         fetchPosts.forEach( async elem => {
-            const post = document.createElement('div');
-            post.classList.add('post');
-            post.id = "post-" + elem.id;
-
-            const user = await userService.getUser(elem.userId);
-            post.innerHTML = `
-                <div class="bg-coffee rounded-2xl p-4 m-2 dark:bg-dust">
-                    <div class="flex flex-row justify-between align-middle">
-                        <div>
-                            <img class="inline" height="80" width="80" src="./assets/anonim.png">
-                            <h2 class="username inline text-dust dark:text-coffee">${user.name}</h2>
-                        </div>
-                        <div class="flex align-middle flex-row justify-end my-4 space-x-3 mr-2">
-                            <img class="edit-button w-8 h-8 self-center" src="./assets/edit.png" alt="edit">
-                            <img class="delete-button w-8 h-8 self-center" src="./assets/bin.png" alt="delete">
-                        </div>
-                    </div>
-                    <h1 class="title text-center text-2xl pb-5 text-dust dark:text-coffee">${elem.title}</h1>
-                    <h2 class="body text-dust dark:text-coffee">${elem.body}</h2>
-                </div>`;
-            post.querySelector(".edit-button").addEventListener('click', () => {editPost(elem.id)});
-            post.querySelector(".delete-button").addEventListener('click', () => {deletePost(elem.id)});
-
-            posts[elem.id] = {
+            addPostToPosts({
+                id: elem.id,
                 userId: elem.userId,
-                username: user.name,
                 title: elem.title,
-                body: elem.body
-            };
-            divPosts.appendChild(post);
+                body: elem.body,
+            });
         });
     });
 }
+
+const addPostToPosts = async (postData) => {
+    const post = document.createElement('div');
+    post.classList.add('post');
+    post.id = "post-" + postData.id;
+    post.innerHTML = `
+        <div class="bg-coffee rounded-2xl p-4 m-2 dark:bg-dust">
+            <div class="flex flex-row justify-between align-middle">
+                <div>
+                    <img class="inline" height="80" width="80" src="./assets/anonim.png">
+                    <h2 class="username inline text-dust dark:text-coffee">${users[postData.userId].name}</h2>
+                </div>
+                <div class="flex align-middle flex-row justify-end my-4 space-x-3 mr-2">
+                    <img class="edit-button w-8 h-8 self-center" src="./assets/edit.png" alt="edit">
+                    <img class="delete-button w-8 h-8 self-center" src="./assets/bin.png" alt="delete">
+                </div>
+            </div>
+            <h1 class="title text-center text-2xl pb-5 text-dust dark:text-coffee">${postData.title}</h1>
+            <h2 class="body text-dust dark:text-coffee">${postData.body}</h2>
+        </div>`;
+    post.querySelector(".edit-button").addEventListener('click', () => {editPost(postData.id)});
+    post.querySelector(".delete-button").addEventListener('click', () => {deletePost(postData.id)});
+
+    posts[postData.id] = postData;
+    divPosts.appendChild(post);
+};
 
 const initModal = () => {
     // when click on modal__overlay then close modal
@@ -67,24 +69,37 @@ const initModal = () => {
             case modes.EDIT:
                 let editingPost = document.querySelector(`#post-${idLastSelectedPost}`);
                 // update DOM
-                editingPost.querySelector(".username").innerHTML  = userIdInput.value;
+                editingPost.querySelector(".username").innerHTML  = users[userIdInput.value].name;
                 editingPost.querySelector(".title").innerHTML  = titleInput.value;
                 editingPost.querySelector(".body").innerHTML  = bodyInput.value;
                 // update posts array
                 posts[idLastSelectedPost].userId = userIdInput.value;
+                posts[idLastSelectedPost].username = users[userIdInput.value].name;
                 posts[idLastSelectedPost].title = titleInput.value;
                 posts[idLastSelectedPost].body = bodyInput.value;
                 break;
             case modes.CREATE:
-                
+                // send AJAX request to save post
+                const newPostFromFetch = postService.createPost({
+                    userId: elem.userId,
+                    title: elem.title,
+                    body: elem.body
+                });
 
+                addPostToPosts({
+                    id: newPostFromFetch.id,
+                    userId: elem.userId,
+                    title: elem.title,
+                    body: elem.body,
+                });
+                break;
         }
         modalWindow.hidden = true;
     });
 };
 
-const initFetchUsers = () => {
-    userService.getUsers().then((fetchUsers) => {
+const initFetchUsers = async () => {
+    await userService.getUsers().then((fetchUsers) => {
         fetchUsers.forEach((fetchUser) => {
             users[fetchUser.id] = {
                 name: fetchUser.name,
@@ -96,9 +111,9 @@ const initFetchUsers = () => {
     });
 };
 
-initFetchPostsAndRenderAll();
+await initFetchUsers();
 initModal();
-initFetchUsers();
+await initFetchPostsAndRenderAll();
 
 const editPost = (id) => {
     console.log(`edit post with id = ${id}`);
@@ -114,20 +129,12 @@ const editPost = (id) => {
 
 };
 
-const deletePost = () => {
+const deletePost = (id) => {
     console.log(`delete post with id = ${id}`);
-    // check favorites post
-
+    delete posts[id];
+    postService.deletePost(id);
+    divPosts.removeChild(document.querySelector(`#post-${id}`));
 };
-
-
-
-
-
-
-
-
-
 
 // Dark mode
 if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
