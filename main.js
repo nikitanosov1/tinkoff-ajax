@@ -4,10 +4,11 @@ import postService from "./postService.js";
 // states
 let posts = {};
 let users = {};
-let modes = { CREATE: 0, EDIT: 1 };
+let modes = { CREATE: 0, EDIT: 1, DELETE: 2 };
 let modalMode = modes.CREATE;
 let idLastSelectedPost = null;
 let modalWindow = document.querySelector('#modal');
+let repeatModalWindow = document.querySelector("#repeat-modal-window");
 let divPosts = document.querySelector('#posts');
 
 // loader
@@ -47,7 +48,11 @@ const initModal = () => {
     }
 
     // when click on modal__overlay then close modal
-    document.querySelector("#modal__overlay").addEventListener('click', () => {modalWindow.hidden = true});
+    document.querySelector("#modal__overlay").addEventListener('click', () => {
+        modalWindow.hidden = true;
+        repeatModalWindow.hidden = true; // hide repeat modal inner window
+        modalWindow.firstElementChild.nextElementSibling.hidden = false; // show standart modal inner window
+    });
 
     // when click on modal__close-button then close modal
     document.querySelector("#modal__close-button").addEventListener('click', () => {modalWindow.hidden = true});
@@ -56,8 +61,7 @@ const initModal = () => {
     let titleInput = document.querySelector("#modal__title-input");
     let bodyInput = document.querySelector("#modal__body-input");
 
-    //when click on modal__submit-button then save/update
-    document.querySelector("#modal__submit-button").addEventListener('click', () => {
+    const modalSubmitButtonFunction = () => {
         // TODO: add validation
         switch (modalMode) {
             case modes.EDIT:
@@ -103,9 +107,16 @@ const initModal = () => {
                     body: posts[idLastSelectedPost].body,
                 });
                 break;
+            case modes.DELETE:
+                localStorage[idLastSelectedPost] = JSON.stringify(false); // set idLastSelectedPost to not favorite
+                deletePost(idLastSelectedPost);
+            break;
         }
         modalWindow.hidden = true;
-    });
+    };
+    //when click on modal__submit-button then save/update/delete
+    document.querySelector("#modal__submit-button").addEventListener('click', () => {modalSubmitButtonFunction()});
+    document.querySelector("#repeat-modal-window__submit-button").addEventListener('click', () => {modalSubmitButtonFunction()});
 };
 
 const editPost = (id) => {
@@ -120,10 +131,47 @@ const editPost = (id) => {
 };
 
 const deletePost = (id) => {
+    idLastSelectedPost = id;
+    modalMode = modes.DELETE;
+    if (JSON.parse(localStorage[id])) {
+        // if the post is important
+        repeatModalWindow.querySelector("#repeat-modal-window__title").innerHTML = `
+        <div class="">Are you sure to delete this post?</div>
+        <div class="bg-coffee rounded-2xl p-4 m-2 dark:bg-dust">
+        <div class="flex flex-row justify-between align-middle">
+            <div class="flex flex-row align-middle justify-start">
+                <img class="inline" height="80" width="80" src="./assets/anonim.png">
+                <h2 class="username inline text-dust self-center dark:text-coffee overflow-hidden">${users[posts[id].userId].name}</h2>
+            </div>
+            <div class="flex align-middle flex-row justify-end my-4 space-x-3 mr-2">
+                <div class="star w-8 h-8 self-center">
+                    <img class="active-star w-8 h-8 self-center" src="./assets/activeStar.png" alt="added to favotites" hidden>
+                    <img class="afk-star w-8 h-8 self-center" src="./assets/afkStar.png" alt="not added to favorites">
+                </div>
+                <img class="edit-button w-8 h-8 self-center" src="./assets/edit.png" alt="edit">
+                <img class="delete-button w-8 h-8 self-center" src="./assets/bin.png" alt="delete">
+            </div>
+        </div>
+        <h1 class="title text-center text-2xl pb-5 text-dust dark:text-coffee">${posts[id].title}</h1>
+        <h2 class="body text-dust dark:text-coffee">${posts[id].body}</h2>
+        </div>
+
+
+        `;
+        modalWindow.firstElementChild.nextElementSibling.hidden = true; // hide standart modal inner window
+        repeatModalWindow.hidden = false; // show repeat modal inner window
+        modalWindow.hidden = false; // show full modal window
+        return;
+    }
+    console.log("ss");
     delete posts[id];
     postService.deletePost(id);
     divPosts.removeChild(document.querySelector(`#post-${id}`));
     localStorage.removeItem(id);
+    
+    repeatModalWindow.hidden = true; // hide repeat modal inner window
+    modalWindow.firstElementChild.nextElementSibling.hidden = false; // show standart modal inner window
+    modalWindow.hidden = true; // hide full modal window
 };
 
 const initCreatePostButton = () => {
@@ -144,10 +192,10 @@ const changeImportanceOfPost = (id) => {
     starDiv.lastElementChild.hidden = !starDiv.lastElementChild.hidden;
     localStorage[id] = !(JSON.parse(localStorage[id])); // save to localStorage
     let currentPost = document.querySelector(`#post-${id}`);
-    if (JSON.parse(localStorage[id])) {
+    if (JSON.parse(localStorage[id])){
         // this post now is important, move to start
-        //divPosts.firstChild is loader
-        insertAfter(divPosts.firstChild, currentPost);
+        //divPosts.firstChild.nextSibling is loader
+        insertAfter(divPosts.firstChild.nextSibling, currentPost);
     } else {
         // this post now is normal, move to end
         insertAfter(divPosts.lastChild, currentPost);
