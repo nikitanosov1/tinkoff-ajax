@@ -134,6 +134,14 @@ const initCreatePostButton = () => {
     });
 };
 
+const changeImportanceOfPost = (id) => {
+    let starDiv = document.querySelector(`#post-${id} .star`);
+    starDiv.firstElementChild.hidden = !starDiv.firstElementChild.hidden;
+    starDiv.lastElementChild.hidden = !starDiv.lastElementChild.hidden;
+    localStorage[id] = !(localStorage[id] ?? false); // save to localStorage
+
+}
+
 const addPostToPosts = async (postData) => {
     const post = document.createElement('div');
     post.classList.add('post');
@@ -141,11 +149,15 @@ const addPostToPosts = async (postData) => {
     post.innerHTML = `
         <div class="bg-coffee rounded-2xl p-4 m-2 dark:bg-dust">
             <div class="flex flex-row justify-between align-middle">
-                <div>
+                <div class="flex flex-row align-middle justify-start">
                     <img class="inline" height="80" width="80" src="./assets/anonim.png">
-                    <h2 class="username inline text-dust dark:text-coffee">${users[postData.userId].name}</h2>
+                    <h2 class="username inline text-dust self-center dark:text-coffee overflow-hidden">${users[postData.userId].name}</h2>
                 </div>
                 <div class="flex align-middle flex-row justify-end my-4 space-x-3 mr-2">
+                    <div class="star w-8 h-8 self-center">
+                        <img class="active-star w-8 h-8 self-center" src="./assets/activeStar.png" alt="added to favotites" hidden>
+                        <img class="afk-star w-8 h-8 self-center" src="./assets/afkStar.png" alt="not added to favorites">
+                    </div>
                     <img class="edit-button w-8 h-8 self-center" src="./assets/edit.png" alt="edit">
                     <img class="delete-button w-8 h-8 self-center" src="./assets/bin.png" alt="delete">
                 </div>
@@ -155,6 +167,7 @@ const addPostToPosts = async (postData) => {
         </div>`;
     post.querySelector(".edit-button").addEventListener('click', () => {editPost(postData.id)});
     post.querySelector(".delete-button").addEventListener('click', () => {deletePost(postData.id)});
+    post.querySelector(".star").addEventListener('click', () => {changeImportanceOfPost(postData.id)});
 
     posts[postData.id] = postData;
     divPosts.appendChild(post);
