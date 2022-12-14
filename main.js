@@ -24,6 +24,15 @@ const initFetchUsers = async () => {
 };
 
 const initModal = () => {
+    // added user names to modal__user-input how <option> tag
+    let modalUserInput = document.querySelector("#modal__user-input")
+    for (let userId in users) {
+        const option = document.createElement('option');
+        option.setAttribute("value", userId);
+        option.innerHTML = users[userId].name;
+        modalUserInput.add(option);
+    }
+
     // when click on modal__overlay then close modal
     document.querySelector("#modal__overlay").addEventListener('click', () => {modalWindow.hidden = true});
 
