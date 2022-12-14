@@ -4,8 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "run": "vite",
-    "start": "npx tailwindcss -i ./input.css -o ./output.css --watch"
+    "vite": "vite",
+    "tailwind": "npx tailwindcss -i ./input.css -o ./output.css --watch"
   },
   "repository": {
     "type": "git",
