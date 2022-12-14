@@ -11,7 +11,6 @@ let modalWindow = document.querySelector('#modal');
 let divPosts = document.querySelector('#posts');
 
 // loader
-
 let loader = document.querySelector('#loader');
 let loading = new CustomEvent('loading');
 let stopLoading = new CustomEvent('stopLoading');
@@ -124,6 +123,7 @@ const deletePost = (id) => {
     delete posts[id];
     postService.deletePost(id);
     divPosts.removeChild(document.querySelector(`#post-${id}`));
+    localStorage.removeItem(id);
 };
 
 const initCreatePostButton = () => {
@@ -142,21 +142,16 @@ const changeImportanceOfPost = (id) => {
     let starDiv = document.querySelector(`#post-${id} .star`);
     starDiv.firstElementChild.hidden = !starDiv.firstElementChild.hidden;
     starDiv.lastElementChild.hidden = !starDiv.lastElementChild.hidden;
-    localStorage[id] = String(!(localStorage[id] ?? false)); // save to localStorage
+    localStorage[id] = !(JSON.parse(localStorage[id])); // save to localStorage
     let currentPost = document.querySelector(`#post-${id}`);
-    console.log(localStorage);
-    console.log(typeof localStorage[id]);
-    if (localStorage[id] === 'true') {
+    if (JSON.parse(localStorage[id])) {
         // this post now is important, move to start
         //divPosts.firstChild is loader
-        console.log("в начало его!")
         insertAfter(divPosts.firstChild, currentPost);
     } else {
         // this post now is normal, move to end
-        console.log("в конец его!")
         insertAfter(divPosts.lastChild, currentPost);
     }
-
 }
 
 const addPostToPosts = async (postData) => {
@@ -204,6 +199,7 @@ const initFetchPostsAndRenderAll = async () => {
                 title: elem.title,
                 body: elem.body,
             });
+            localStorage[elem.id] = JSON.stringify(false);
         });
     });
 
