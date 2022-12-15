@@ -102,7 +102,7 @@ const initModal = () => {
                     title: posts[idLastSelectedPost].title,
                     body: posts[idLastSelectedPost].body
                 });
-
+                localStorage[newPostFromFetch.id] = JSON.stringify(false); // not favorite by default
                 addPostToPosts({
                     id: newPostFromFetch.id,
                     userId: posts[idLastSelectedPost].userId,
