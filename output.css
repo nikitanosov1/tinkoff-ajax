@@ -683,6 +683,15 @@ video {
   min-height: 100vh;
 }
 
+.min-h-\[8\] {
+  min-height: 8;
+}
+
+.min-h-max {
+  min-height: -moz-max-content;
+  min-height: max-content;
+}
+
 .w-full {
   width: 100%;
 }

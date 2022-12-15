@@ -217,10 +217,10 @@ const addPostToPosts = async (postData) => {
                     <img class="inline" height="80" width="80" src="./assets/anonim.png">
                     <h2 class="username inline self-center text-coffee overflow-hidden dark:text-dust">${users[postData.userId].name}</h2>
                 </div>
-                <div class="flex align-middle flex-row justify-end my-4 space-x-3 mr-2">
-                    <div class="star w-8 h-8 self-center">
-                        <img class="active-star w-8 h-8 self-center" src="./assets/activeStar.png" alt="added to favotites" hidden>
-                        <img class="afk-star w-8 h-8 self-center" src="./assets/afkStar.png" alt="not added to favorites">
+                <div class="flex align-middle min-h-max flex-row justify-end my-4 space-x-3 mr-2">
+                    <div class="star w-fit h-fit self-center">
+                        <img class="active-star w-8 self-center" src="./assets/activeStar.png" alt="added to favotites" hidden>
+                        <img class="afk-star w-8 self-center" src="./assets/afkStar.png" alt="not added to favorites">
                     </div>
                     <img class="edit-button w-8 h-8 self-center" src="./assets/edit.png" alt="edit">
                     <img class="delete-button w-8 h-8 self-center" src="./assets/bin.png" alt="delete">
@@ -277,6 +277,8 @@ localStorage.theme =  ('theme' in localStorage) ? localStorage.theme : JSON.stri
 if (JSON.parse(localStorage.theme) === 'dark') {
     document.documentElement.classList.add('dark');
     localStorage.theme = JSON.stringify('dark');
+    darkModeSwitchButton.firstElementChild.hidden = !darkModeSwitchButton.firstElementChild.hidden;
+    darkModeSwitchButton.lastElementChild.hidden = !darkModeSwitchButton.lastElementChild.hidden;
 } 
 
 darkModeSwitchButton.addEventListener('click', () => {
