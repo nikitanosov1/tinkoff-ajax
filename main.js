@@ -211,7 +211,7 @@ const addPostToPosts = async (postData) => {
     post.classList.add('hover:scale-105');
     post.id = "post-" + postData.id;
     post.innerHTML = `
-        <div class="bg-coffee rounded-2xl p-4 m-2 dark:bg-dust">
+        <div class="rounded-2xl p-4 m-2 bg-dust dark:bg-gray-400">
             <div class="flex flex-row justify-between align-middle">
                 <div class="flex flex-row align-middle justify-start">
                     <img class="inline" height="80" width="80" src="./assets/anonim.png">
@@ -266,22 +266,28 @@ initCreatePostButton();
 await initFetchPostsAndRenderAll();
 
 // Dark mode
-if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.remove('dark')
-    localStorage.theme = 'light'
-} else {
-    document.documentElement.classList.add('dark')
-    localStorage.theme = 'dark'
-}
+
 
 let darkSwitchButton = document.querySelector(".dark-switch-button");
 
+// init default theme (light) if theme doesn't exit
+localStorage.theme =  ('theme' in localStorage) ? localStorage.theme : JSON.stringify('light');
+
+// if user already has theme on localStorage then apply this theme
+if (JSON.parse(localStorage.theme) === 'dark') {
+    document.documentElement.classList.add('dark');
+    localStorage.theme = JSON.stringify('dark');
+} 
+
+console.log(localStorage.theme);
 darkSwitchButton.addEventListener('click', () => {
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.remove('dark')
-        localStorage.theme = 'light'
+    if (JSON.parse(localStorage.theme) === 'dark') {
+        console.log("1");
+        document.documentElement.classList.remove('dark');
+        localStorage.theme = JSON.stringify('light');
     } else {
-        document.documentElement.classList.add('dark')
-        localStorage.theme = 'dark'
+        console.log("2");
+        document.documentElement.classList.add('dark');
+        localStorage.theme = JSON.stringify('dark');
     }
 });
