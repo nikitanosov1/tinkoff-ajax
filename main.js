@@ -205,6 +205,10 @@ const changeImportanceOfPost = (id) => {
 const addPostToPosts = async (postData) => {
     const post = document.createElement('div');
     post.classList.add('post');
+    post.classList.add('transition');
+    post.classList.add('ease-in-out');
+    post.classList.add('delay-30');
+    post.classList.add('hover:scale-105');
     post.id = "post-" + postData.id;
     post.innerHTML = `
         <div class="bg-coffee rounded-2xl p-4 m-2 dark:bg-dust">
