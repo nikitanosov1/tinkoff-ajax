@@ -211,11 +211,11 @@ const addPostToPosts = async (postData) => {
     post.classList.add('hover:scale-105');
     post.id = "post-" + postData.id;
     post.innerHTML = `
-        <div class="rounded-2xl p-4 m-2 bg-dust dark:bg-gray-400">
+        <div class="rounded-2xl p-4 m-2 bg-dust dark:bg-darkPurple">
             <div class="flex flex-row justify-between align-middle">
                 <div class="flex flex-row align-middle justify-start">
                     <img class="inline" height="80" width="80" src="./assets/anonim.png">
-                    <h2 class="username inline text-dust self-center dark:text-coffee overflow-hidden">${users[postData.userId].name}</h2>
+                    <h2 class="username inline self-center text-coffee overflow-hidden dark:text-dust">${users[postData.userId].name}</h2>
                 </div>
                 <div class="flex align-middle flex-row justify-end my-4 space-x-3 mr-2">
                     <div class="star w-8 h-8 self-center">
@@ -226,8 +226,8 @@ const addPostToPosts = async (postData) => {
                     <img class="delete-button w-8 h-8 self-center" src="./assets/bin.png" alt="delete">
                 </div>
             </div>
-            <h1 class="title text-center text-2xl pb-5 text-dust dark:text-coffee">${postData.title}</h1>
-            <h2 class="body text-dust dark:text-coffee">${postData.body}</h2>
+            <h1 class="title text-center text-2xl pb-5 text-coffee dark:text-dust">${postData.title}</h1>
+            <h2 class="body text-coffee dark:text-dust">${postData.body}</h2>
         </div>`;
     post.querySelector(".edit-button").addEventListener('click', () => {editPost(postData.id)});
     post.querySelector(".delete-button").addEventListener('click', () => {deletePost(postData.id)});
@@ -268,7 +268,7 @@ await initFetchPostsAndRenderAll();
 // Dark mode
 
 
-let darkSwitchButton = document.querySelector(".dark-switch-button");
+let darkModeSwitchButton = document.querySelector("#dark-mode-switch-button");
 
 // init default theme (light) if theme doesn't exit
 localStorage.theme =  ('theme' in localStorage) ? localStorage.theme : JSON.stringify('light');
@@ -279,7 +279,7 @@ if (JSON.parse(localStorage.theme) === 'dark') {
     localStorage.theme = JSON.stringify('dark');
 } 
 
-darkSwitchButton.addEventListener('click', () => {
+darkModeSwitchButton.addEventListener('click', () => {
     if (JSON.parse(localStorage.theme) === 'dark') {
         document.documentElement.classList.remove('dark');
         localStorage.theme = JSON.stringify('light');
@@ -287,4 +287,6 @@ darkSwitchButton.addEventListener('click', () => {
         document.documentElement.classList.add('dark');
         localStorage.theme = JSON.stringify('dark');
     }
+    darkModeSwitchButton.firstElementChild.hidden = !darkModeSwitchButton.firstElementChild.hidden;
+    darkModeSwitchButton.lastElementChild.hidden = !darkModeSwitchButton.lastElementChild.hidden;
 });

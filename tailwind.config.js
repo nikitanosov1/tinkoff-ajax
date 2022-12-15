@@ -18,6 +18,12 @@ content: ["./**.{html,js}"],
         coffee: '#5C3825',
         dust: '#C7AA92',
         milk: '#fdfff5',
+        // for dark theme
+        "darkNight-1": '#000000',
+        "darkNight-2": '#0B0718',
+        darkPurpleDark: '#160150',
+        darkPurple: '#400072',
+        darkPurpleBright: '#600095',
       }
     },
   },
