@@ -279,7 +279,6 @@ if (JSON.parse(localStorage.theme) === 'dark') {
     localStorage.theme = JSON.stringify('dark');
 } 
 
-console.log(localStorage.theme);
 darkSwitchButton.addEventListener('click', () => {
     if (JSON.parse(localStorage.theme) === 'dark') {
         console.log("1");
