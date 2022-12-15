@@ -21,6 +21,7 @@ content: ["./**.{html,js}"],
         // for dark theme
         "darkNight-1": '#000000',
         "darkNight-2": '#0B0718',
+        "darkNight-3": '#180021',
         darkPurpleDark: '#160150',
         darkPurple: '#400072',
         darkPurpleBright: '#600095',
