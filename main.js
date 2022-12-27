@@ -1,20 +1,23 @@
 import userService from "./userService.js";
 import postService from "./postService.js";
 
+// consts
+const modes = { CREATE: 0, EDIT: 1, DELETE: 2 };
+const modalWindow = document.querySelector('#modal');
+const repeatModalWindow = document.querySelector("#repeat-modal-window");
+const divPosts = document.querySelector('#posts');
+const users = {};
+
 // states
 let posts = {};
-let users = {};
-let modes = { CREATE: 0, EDIT: 1, DELETE: 2 };
 let modalMode = modes.CREATE;
 let idLastSelectedPost = null;
-let modalWindow = document.querySelector('#modal');
-let repeatModalWindow = document.querySelector("#repeat-modal-window");
-let divPosts = document.querySelector('#posts');
+let lastFavorPost = document.querySelector('#loader');
 
 // loader
-let loader = document.querySelector('#loader');
-let loading = new CustomEvent('loading');
-let stopLoading = new CustomEvent('stopLoading');
+const loader = document.querySelector('#loader');
+const loading = new CustomEvent('loading');
+const stopLoading = new CustomEvent('stopLoading');
 
 document.addEventListener('loading', () => {
     loader.hidden = false;
@@ -86,7 +89,10 @@ const initModal = () => {
                     body: bodyInput.value,
                     userId: userIdInput.value
                 });
-
+                // Clearing modat inputs
+                document.querySelector('#modal__user-input').value = '';
+                document.querySelector('#modal__title-input').value = '';
+                document.querySelector('#modal__body-input').value = '';
                 break;
             case modes.CREATE:
                 // added post to posts array
@@ -97,18 +103,23 @@ const initModal = () => {
                 posts[idLastSelectedPost].body = bodyInput.value;
 
                 // send AJAX request to save post
-                const newPostFromFetch = postService.createPost({
+                postService.createPost({
                     userId: posts[idLastSelectedPost].userId,
                     title: posts[idLastSelectedPost].title,
                     body: posts[idLastSelectedPost].body
+                }).then(newPostFromFetch => {
+                    localStorage[newPostFromFetch.id] = JSON.stringify(false); // not favorite by default
+                    addPostToPosts({
+                        id: newPostFromFetch.id,
+                        userId: posts[idLastSelectedPost].userId,
+                        title: posts[idLastSelectedPost].title,
+                        body: posts[idLastSelectedPost].body,
+                    });
                 });
-                localStorage[newPostFromFetch.id] = JSON.stringify(false); // not favorite by default
-                addPostToPosts({
-                    id: newPostFromFetch.id,
-                    userId: posts[idLastSelectedPost].userId,
-                    title: posts[idLastSelectedPost].title,
-                    body: posts[idLastSelectedPost].body,
-                });
+                // Clearing modat inputs
+                document.querySelector('#modal__user-input').value = '';
+                document.querySelector('#modal__title-input').value = '';
+                document.querySelector('#modal__body-input').value = '';
                 break;
             case modes.DELETE:
                 localStorage[idLastSelectedPost] = JSON.stringify(false); // set idLastSelectedPost to not favorite
@@ -192,13 +203,17 @@ const changeImportanceOfPost = (id) => {
     starDiv.lastElementChild.hidden = !starDiv.lastElementChild.hidden;
     localStorage[id] = !(JSON.parse(localStorage[id])); // save to localStorage
     let currentPost = document.querySelector(`#post-${id}`);
+
     if (JSON.parse(localStorage[id])){
-        // this post now is important, move to start
-        //divPosts.firstChild.nextSibling is loader
-        insertAfter(divPosts.firstChild.nextSibling, currentPost);
+        // this post now is important, move to last favor post
+        insertAfter(lastFavorPost, currentPost);
+        lastFavorPost = lastFavorPost.nextElementSibling;
     } else {
-        // this post now is normal, move to end
-        insertAfter(divPosts.lastChild, currentPost);
+        // this post now is normal, move to start of NOT favor posts
+        if (lastFavorPost === currentPost) {
+            lastFavorPost = lastFavorPost.previousElementSibling;
+        }
+        else insertAfter(lastFavorPost, currentPost);
     }
 }
 
@@ -234,7 +249,7 @@ const addPostToPosts = async (postData) => {
     post.querySelector(".star").addEventListener('click', () => {changeImportanceOfPost(postData.id)});
 
     posts[postData.id] = postData;
-    divPosts.appendChild(post);
+    insertAfter(lastFavorPost, post);
 };
 
 const initFetchPostsAndRenderAll = async () => {
